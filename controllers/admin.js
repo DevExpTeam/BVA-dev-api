@@ -1,27 +1,26 @@
-const { auth, db } = require("../firebase");
-const { User } = require("../models");
+const { Admin } = require("../models");
 
 const getSettings = async (req, res) => {
   try {
-    const userCompany = await AllCompany.getByUserId(userId);
-    const sandboxCompany = await AllCompany.getByUserId("sandbox");
-    res.json([...sandboxCompany, ...userCompany]);
+    const settings = await Admin.getSettings();
+    res.json(settings);
   } catch (error) {
     res
       .status(500)
-      .json({ message: "Error retrieving company", error: error.message });
+      .json({ message: "Error retrieving global user settings", error: error.message });
   }
 };
 
 const updateSettings = async (req, res) => {
+  const { data } = req.body;
+
   try {
-    const userCompany = await AllCompany.getByUserId(userId);
-    const sandboxCompany = await AllCompany.getByUserId("sandbox");
-    res.json([...sandboxCompany, ...userCompany]);
+    await Admin.updateSettings(data);
+    res.json({ message: "Settings updated successfully" });
   } catch (error) {
     res
       .status(500)
-      .json({ message: "Error retrieving company", error: error.message });
+      .json({ message: "Error updating global user settings", error: error.message });
   }
 };
 

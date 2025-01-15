@@ -20,7 +20,7 @@ router.post("/generate-admin", auth.generateAdmin);
 
 // Admin routes
 router.get("/admin/settings", admin.getSettings);
-router.post("/admin/settings", verifyAdmin, admin.updateSettings);
+router.post("/admin/settings", admin.updateSettings);
 
 // Source routes
 router.post("/sources", verifyToken, sources.addSource);
