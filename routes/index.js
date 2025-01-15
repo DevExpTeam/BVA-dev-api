@@ -1,6 +1,7 @@
 const express = require("express");
 const admin = require("../controllers/admin");
 const auth = require("../controllers/auth");
+const openai = require("../controllers/openai");
 const sources = require("../controllers/sources");
 const company = require("../controllers/company");
 const payments = require("../controllers/payments");
@@ -21,6 +22,11 @@ router.post("/generate-admin", auth.generateAdmin);
 // Admin routes
 router.get("/admin/settings", admin.getSettings);
 router.post("/admin/settings", admin.updateSettings);
+
+//openAI
+router.post("/openai/category", openai.getCategory);
+router.post("/openai/note", openai.getNote);
+router.post("/openai/search", openai.getSearchResult);
 
 // Source routes
 router.post("/sources", verifyToken, sources.addSource);

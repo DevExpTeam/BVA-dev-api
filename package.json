@@ -24,6 +24,7 @@
     "functions": "file:",
     "intuit-oauth": "^4.1.2",
     "nodemon": "^3.1.4",
+    "openai": "^4.78.1",
     "stripe": "^16.1.0"
   },
   "devDependencies": {
