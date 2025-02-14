@@ -92,18 +92,22 @@ const getData = async (req, res) => {
   const { type, companyId, startMonth, endMonth } = req.body;
   const company = await AccountingData.findById(companyId);
 
-  const balanceSheet = company.balanceSheet.filter((data) => 
-    new Date(startMonth) < new Date(data.Header.EndPeriod)
-      && new Date(endMonth) > new Date(data.Header.StartPeriod)
-  )
+  if(type == "get_accounting_balance_sheet") {
+    const balanceSheet = company.balanceSheet.filter((data) => 
+      new Date(startMonth) <= new Date(data.earliestAvailableMonth)
+        && new Date(endMonth) >= new Date(data.mostRecentAvailableMonth)
+    )
 
-  const profitLoss = company.profitLoss.filter((data) => 
-    new Date(startMonth) < new Date(data.Header.EndPeriod)
-      && new Date(endMonth) > new Date(data.Header.StartPeriod)
-  )
+    res.send(balanceSheet);
+  }
+  else if(type == "get_accounting_profit_loss") {
+    const profitLoss = company.profitLoss.filter((data) => 
+      new Date(startMonth) <= new Date(data.earliestAvailableMonth)
+        && new Date(endMonth) >= new Date(data.mostRecentAvailableMonth)
+    )
 
-  if(type == "get_accounting_balance_sheet") res.send(balanceSheet);
-  else if(type == "get_accounting_profit_loss") res.send(profitLoss);
+    res.send(profitLoss);
+  }
 }
 
 const verifyLink = async (req, res) => {
