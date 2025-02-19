@@ -94,16 +94,16 @@ const getData = async (req, res) => {
 
   if(type == "get_accounting_balance_sheet") {
     const balanceSheet = company.balanceSheet.filter((data) => 
-      new Date(startMonth) <= new Date(data.earliestAvailableMonth)
-        && new Date(endMonth) >= new Date(data.mostRecentAvailableMonth)
+      new Date(startMonth) <= new Date(data.fromDateReport)
+        && new Date(endMonth) >= new Date(data.toDateReport)
     )
 
     res.send(balanceSheet);
   }
   else if(type == "get_accounting_profit_loss") {
     const profitLoss = company.profitLoss.filter((data) => 
-      new Date(startMonth) <= new Date(data.earliestAvailableMonth)
-        && new Date(endMonth) >= new Date(data.mostRecentAvailableMonth)
+      new Date(startMonth) <= new Date(data.fromDateReport)
+        && new Date(endMonth) >= new Date(data.toDateReport)
     )
 
     res.send(profitLoss);
