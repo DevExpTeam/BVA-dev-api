@@ -75,6 +75,12 @@ const editCompany = async (req, res) => {
       res.status(400).json({ message: "Company Not Found" });
     }
 
+    if(companyId === "sandbox") {
+      res
+        .status(500)
+        .json({ message: "Can't edit the Sandbox company", error: error.message });
+    }
+
     if(accountingData) await AccountingData.updateByCompanyRefId(companyId, accountingData);
     await AllCompany.updateByCompanyRefId(companyId, otherData);
 

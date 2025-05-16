@@ -26,7 +26,8 @@ router.post("/admin/settings", admin.updateSettings);
 //openAI
 router.post("/openai/category", openai.getCategory);
 router.post("/openai/note", openai.getNote);
-router.post("/openai/search", openai.getSearchResult);
+router.post("/openai/searchRate", openai.getSearchRate);
+router.post("/openai/searchCompany", openai.getSearchCompany);
 
 // Source routes
 router.post("/sources", verifyToken, sources.addSource);
