@@ -28,6 +28,7 @@ router.post("/openai/category", openai.getCategory);
 router.post("/openai/note", openai.getNote);
 router.post("/openai/searchRate", openai.getSearchRate);
 router.post("/openai/searchCompany", openai.getSearchCompany);
+router.post("/openai/searchReport", openai.getSearchReport);
 
 // Source routes
 router.post("/sources", verifyToken, sources.addSource);

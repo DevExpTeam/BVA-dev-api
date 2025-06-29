@@ -183,22 +183,6 @@ const getSearchCompany = async (req, res) => {
                 "type": "string",
                 "description": "The DUNS number of the business"
               },
-              "overview": {
-                "type": "string",
-                "description": "The business overview"
-              },
-              "products": {
-                "type": "string",
-                "description": "The products and services which the business provide"
-              },
-              "competition": {
-                "type": "string",
-                "description": "The competition"
-              },
-              "report": {
-                "type": "string",
-                "description": "The Industry Economics Report"
-              },
               "pNAICS": {
                 "type": "string",
                 "description": "The NAICS code of the business's primary activity"
@@ -233,10 +217,6 @@ const getSearchCompany = async (req, res) => {
               "zipCode",
               "country",
               "dunsNumber",
-              "overview",
-              "products",
-              "competition",
-              "report",
               "pNAICS",
               "pSIC",
               "pISIC",
@@ -252,12 +232,12 @@ const getSearchCompany = async (req, res) => {
           user_location: {
             type: 'approximate'
           },
-          search_context_size: 'low'
+          search_context_size: 'high'
         }
       ],
     })
 
-    res.json(response.output[2].arguments);
+    res.json(response?.output[2].arguments);
   } catch (error) {
     res
       .status(500)
@@ -265,4 +245,69 @@ const getSearchCompany = async (req, res) => {
   }
 };
 
-module.exports = { getCategory, getNote, getSearchRate, getSearchCompany };
+const getSearchReport = async (req, res) => {
+  const { data } = req.body;
+
+  const openai = new OpenAI({
+    apiKey: process.env.REACT_APP_GPT_KEY,
+    // dangerouslyAllowBrowser: true
+  });
+
+  const system_message = `
+  You are a web search agent specializing in financial and ${data?.type} data collection for business valuation purposes.
+  `
+
+  const user_message = `
+  Search the web just one time after you carefully read all instructions.
+
+  This is the website link of our company
+  ${data?.link}
+
+  Write a comprehensive 500-1,000 word “The ${data?.type}${data?.type === "Business" ? " Overview" : ""} Report” ${data?.type === "Economic" ? "after you find out which country our company is in" : "for our company"}.
+  This report will be included in a formal business valuation report.
+  ${data?.type === "Business" ? "The report must include contents about products & services and competition." : data?.type === "Economic" ? "The report must include contents about national, regional and local analysis." : ""}
+  Strictly adhere to NACVA and USPAP standards.
+  Follow the logic, structure, tone, and format of the attached file “${data?.type} Overview Main”${data?.type === "Business" ? "." : " and use the attached file “" + data?.type + " Overview Supplementary” as reference."}
+  Check those files first and then carefully search all available online sources to collect enough data.
+  Do NOT make assumptions and the data must be 100% accurate.
+  Do NOT include the report title, your own explanation or unnecessary words.
+  Do NOT include any links, addresses, or source references of any kind.
+  Do NOT repeat searches or generate duplicate reports.
+  `
+
+  try {
+    const response = await openai.responses.create({
+      model: "gpt-4.1",
+      input: [
+        { role: 'system', content: system_message },
+        { role: 'user', content: user_message }
+      ],
+      tools: [
+        {
+          "type": "file_search",
+          "vector_store_ids": [
+            data?.type === "Business" ?
+              "vs_6837d5a48a3481918f0b754531e26019"
+            :
+              data?.type === "Industry" ? "vs_6836e73634588191baeaa7e68314e214" : "vs_68382eb75f2c8191a7e17d9d7570e4ef"
+          ]
+        },
+        {
+          type: 'web_search_preview',
+          user_location: {
+            type: 'approximate'
+          },
+          search_context_size: 'high'
+        }
+      ],
+    })
+
+    res.json(response?.output_text);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error getting GPT search result", error: error.message });
+  }
+};
+
+module.exports = { getCategory, getNote, getSearchRate, getSearchCompany, getSearchReport };
