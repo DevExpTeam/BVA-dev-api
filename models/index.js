@@ -191,6 +191,12 @@ class Projects {
       updatedAt: timestamp,
     };
     await projectRef.set(data);
+    return {
+      ...data.appState.projectDetail,
+      projectId: projectRef.id,
+      createdAt: timestamp,
+      updatedAt: timestamp,
+    };
   }
 
   static async updateById(projectId, updateData) {
@@ -200,7 +206,7 @@ class Projects {
 
     // Update the document
     const updateddata = await doc.ref.update({ ...updateData });  //in case for partial update
-    return updateddata;
+    return updateddata.appState.projectDetail;
   }
 
   static async getById(projectId) {

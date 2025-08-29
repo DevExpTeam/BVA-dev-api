@@ -34,18 +34,12 @@ const createOrEditProject = async (req, res) => {
         if(projectData.appState.projectDetail.hasOwnProperty('projectId')) {
             //edit the company
             const projectId = projectData.appState.projectDetail.projectId;
-            await Projects.updateById(projectId, projectData);
-
-            res.status(200).json({
-                message: "Update project data successfully",
-            });
+            const projectDetail = await Projects.updateById(projectId, projectData);
+            res.json(projectDetail);
         } else {
             //create a company
-            await Projects.create(projectData);
-
-            res.status(200).json({
-                message: "Set project data successfully",
-            });
+            const projectDetail = await Projects.create(projectData);
+            res.json(projectDetail);
         }
 
     } catch (error) {
