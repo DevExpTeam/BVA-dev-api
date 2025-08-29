@@ -123,10 +123,4 @@ const verifyLink = async (req, res) => {
   res.send(companyId);
 }
 
-const editCompanyByIdForCodat = async (req, res) => {
-  res.status(200).json({
-    message: "Update company data successfully",
-  });
-};
-
-module.exports = { addSyncCompany, getCompany, editCompany, getData, verifyLink, editCompanyByIdForCodat };
+module.exports = { addSyncCompany, getCompany, editCompany, getData, verifyLink };

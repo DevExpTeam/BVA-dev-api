@@ -180,6 +180,45 @@ class AccountingData {
   }
 }
 
+class Projects {
+  static async create(data) {
+    const projectRef = db.collection("projects").doc();
+    const timestamp = new Date().getTime();
+    data.appState.projectDetail = {
+      ...data.appState.projectDetail,
+      projectId: projectRef.id,
+      createdAt: timestamp,
+      updatedAt: timestamp,
+    }
+    await projectRef.set(data);
+  }
+
+  static async updateById(projectId, updateData) {
+    const projectRef = db.collection("projects").doc(projectId);
+    const doc = await projectRef.get();
+    updateData.appState.projectDetail.updatedAt = Date.now();
+
+    // Update the document
+    const updateddata = await doc.ref.update({ ...updateData });  //in case for partial update
+    return updateddata;
+  }
+
+  static async getById(projectId) {
+    const projectRef = db.collection("projects").doc(projectId);
+    const doc = await projectRef.get();
+    return doc.exists ? doc.data() : null;
+  }
+
+  static async getProjectInfoByUserCompanyId(userId, companyId) {
+    const projectRef = db.collection("projects");
+    const snapshot = await projectRef
+      .where("userId", "==", userId)
+      .where("companyId", "==", companyId)
+      .get();
+    return snapshot?.docs?.map((doc) => doc.data().projectDetail);
+  }
+}
+
 class Payment {
   static async create(data) {
     const paymentRef = db.collection("payments").doc();
@@ -408,6 +447,7 @@ module.exports = {
   Subscription,
   AllCompany,
   AccountingData,
+  Projects,
   Company,
   DataSync,
 };

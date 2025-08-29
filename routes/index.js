@@ -4,6 +4,7 @@ const auth = require("../controllers/auth");
 const openai = require("../controllers/openai");
 const sources = require("../controllers/sources");
 const company = require("../controllers/company");
+const projects = require("../controllers/projects");
 const payments = require("../controllers/payments");
 const subscriptions = require("../controllers/subscriptions");
 const version = require("../controllers/version");
@@ -41,7 +42,11 @@ router.get("/company", verifyToken, company.getCompany);
 router.put("/company", company.editCompany);      //from data poviders
 router.post("/company-data", verifyToken, company.getData);
 router.post("/company-link", company.verifyLink);     //from global
-router.put("/company-codat/:id", verifyToken, company.editCompanyByIdForCodat);
+
+// Project routes
+router.get("/projects", verifyToken, projects.getProjectList);
+router.get("/project", verifyToken, projects.getProjectData);
+router.post("/project", verifyToken, projects.createOrEditProject);
 
 // Subscription routes
 router.post("/subscriptions-session", subscriptions.createSubscriptionSession);
