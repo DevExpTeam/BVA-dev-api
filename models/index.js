@@ -189,7 +189,7 @@ class Projects {
       projectId: projectRef.id,
       createdAt: timestamp,
       updatedAt: timestamp,
-    }
+    };
     await projectRef.set(data);
   }
 
@@ -215,7 +215,7 @@ class Projects {
       .where("userId", "==", userId)
       .where("companyId", "==", companyId)
       .get();
-    return snapshot?.docs?.map((doc) => doc.data().projectDetail);
+    return snapshot?.docs?.map((doc) => doc.data().appState.projectDetail);
   }
 }
 
