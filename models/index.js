@@ -206,7 +206,7 @@ class Projects {
 
     // Update the document
     const updateddata = await doc.ref.update({ ...updateData });  //in case for partial update
-    return updateddata.appState.projectDetail;
+    return updateData.appState.projectDetail;
   }
 
   static async getById(projectId) {
